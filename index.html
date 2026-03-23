@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quick Connect | Dijital Kartvizit</title>
+    <title>Quick Contact | Dijital Kartvizit</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
-            --bg: #0a0a0f;
-            --surface: #12121a;
-            --surface2: #1a1a26;
-            --border: rgba(255,255,255,0.07);
-            --accent: #7c6fef;
-            --accent2: #b8aefc;
-            --accent-dim: rgba(124,111,239,0.12);
-            --text: #f0eff8;
-            --muted: #6b6a7e;
-            --danger: #ef6f6f;
-            --card-bg: linear-gradient(145deg, #1a1930 0%, #0f0e1a 100%);
+            --bg: #ffffff;
+            --surface: #f6f8ff;
+            --surface2: #ffffff;
+            --border: rgba(12, 18, 41, 0.12);
+            --accent: #00eaff;
+            --accent2: #ff2bd6;
+            --accent-dim: rgba(0, 234, 255, 0.14);
+            --text: #101426;
+            --muted: #6b728a;
+            --danger: #ef476f;
+            --card-bg: linear-gradient(145deg, #120a2c 0%, #201146 55%, #0d0731 100%);
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -33,27 +33,27 @@
             content: '';
             position: fixed; inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            opacity: 0.03; pointer-events: none; z-index: 9999;
+            opacity: 0.02; pointer-events: none; z-index: 9999;
         }
         .blob { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
-        .blob-1 { width: 500px; height: 500px; background: rgba(124,111,239,0.12); top: -150px; right: -150px; }
-        .blob-2 { width: 400px; height: 400px; background: rgba(79,60,201,0.08); bottom: -100px; left: -100px; }
+        .blob-1 { width: 500px; height: 500px; background: rgba(0,234,255,0.18); top: -160px; right: -160px; }
+        .blob-2 { width: 420px; height: 420px; background: rgba(255,43,214,0.12); bottom: -120px; left: -120px; }
 
         .container { max-width: 1080px; margin: 0 auto; padding: 60px 24px; position: relative; z-index: 1; }
 
         header { text-align: center; margin-bottom: 56px; animation: fadeUp 0.7s ease both; }
         .logo { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .logo-icon {
-            width: 36px; height: 36px; background: var(--accent); border-radius: 10px;
+            width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 24px rgba(124,111,239,0.5);
+            box-shadow: 0 0 24px rgba(255,43,214,0.35);
         }
         .logo-icon svg { width: 18px; height: 18px; fill: white; }
         h1 {
             font-family: 'Syne', sans-serif;
             font-size: clamp(1.8rem, 4vw, 2.6rem);
             font-weight: 800; letter-spacing: -1px;
-            background: linear-gradient(135deg, #fff 30%, var(--accent2));
+            background: linear-gradient(135deg, #0f152c 20%, #203066 55%, var(--accent2) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
         .subtitle { color: var(--muted); font-weight: 300; font-size: 0.9rem; letter-spacing: 0.02em; margin-top: 6px; }
@@ -68,6 +68,7 @@
             background: var(--surface); border: 1px solid var(--border);
             border-radius: 20px; overflow: hidden;
             animation: fadeUp 0.7s 0.1s ease both;
+            box-shadow: 0 20px 45px rgba(16, 20, 38, 0.08);
         }
 
         .section-block { padding: 24px 28px; }
@@ -77,14 +78,26 @@
             font-family: 'Syne', sans-serif;
             font-size: 0.68rem; font-weight: 700;
             letter-spacing: 0.16em; text-transform: uppercase;
-            color: var(--accent2); opacity: 0.7;
+            color: #35406b; opacity: 1;
             margin-bottom: 16px;
             display: flex; align-items: center; gap: 8px;
+        }
+        .section-title .section-icon {
+            font-size: 0.9rem;
+            filter: drop-shadow(0 0 6px rgba(0,234,255,0.5));
         }
         .section-title::before { content: ''; width: 12px; height: 2px; background: var(--accent); border-radius: 2px; flex-shrink: 0; }
 
         .field-row { margin-bottom: 10px; }
         .field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .phone-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 520px) {
+            .phone-row { grid-template-columns: 1fr; }
+        }
 
         input, select {
             width: 100%;
@@ -102,9 +115,9 @@
         }
         input::placeholder { color: var(--muted); }
         input:focus, select:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(124,111,239,0.15);
-            background: #1e1d2e;
+            border-color: var(--accent2);
+            box-shadow: 0 0 0 3px rgba(255,43,214,0.14), 0 0 0 1px rgba(0,234,255,0.35);
+            background: #ffffff;
         }
         select {
             cursor: pointer;
@@ -113,7 +126,7 @@
             background-position: right 12px center;
             padding-right: 32px;
         }
-        select option { background: #1a1a26; color: var(--text); }
+        select option { background: #ffffff; color: var(--text); }
 
         /* Social rows */
         .social-rows { display: flex; flex-direction: column; gap: 8px; }
@@ -138,29 +151,29 @@
         .btn-add-social {
             margin-top: 10px; width: 100%; padding: 10px;
             background: transparent; border: 1px dashed rgba(124,111,239,0.3);
-            border-radius: 11px; color: var(--accent2);
+            border-radius: 11px; color: #29345f;
             font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
             cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
             transition: background 0.2s, border-color 0.2s;
         }
-        .btn-add-social:hover { background: var(--accent-dim); border-color: rgba(124,111,239,0.5); }
+        .btn-add-social:hover { background: var(--accent-dim); border-color: rgba(255,43,214,0.4); }
 
         /* Preview */
         .sticky-panel { position: sticky; top: 24px; }
         .preview-card {
             border-radius: 20px; overflow: hidden;
             background: var(--card-bg);
-            border: 1px solid rgba(124,111,239,0.2);
-            box-shadow: 0 0 60px rgba(124,111,239,0.1), 0 40px 80px rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,234,255,0.3);
+            box-shadow: 0 0 80px rgba(0,234,255,0.16), 0 40px 80px rgba(8,0,34,0.35);
             animation: fadeUp 0.7s 0.2s ease both;
         }
         .card-top {
             padding: 28px 28px 0;
-            background: linear-gradient(180deg, rgba(124,111,239,0.1) 0%, transparent 100%);
+            background: linear-gradient(180deg, rgba(0,234,255,0.12) 0%, rgba(255,43,214,0.08) 45%, transparent 100%);
         }
         .card-header-label {
             font-size: 0.63rem; letter-spacing: 0.18em; text-transform: uppercase;
-            color: var(--accent2); opacity: 0.5; margin-bottom: 20px;
+            color: #9ff8ff; opacity: 0.88; margin-bottom: 20px;
         }
         .qr-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
         .qr-frame {
@@ -171,22 +184,32 @@
         .card-info { text-align: center; padding-bottom: 20px; }
         #previewName {
             font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #fff 40%, var(--accent2));
+            background: linear-gradient(135deg, #f8fcff 20%, #97fcff 55%, #ffc3ef 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             transition: all 0.3s;
         }
-        #previewTitle { color: var(--muted); font-size: 0.78rem; font-style: italic; margin-top: 3px; }
-        #previewCompany { color: var(--accent2); font-size: 0.75rem; opacity: 0.65; margin-top: 2px; min-height: 1em; }
+        #previewTitle { color: #b8c9ff; font-size: 0.78rem; font-style: italic; margin-top: 3px; }
+        #previewCompany { color: #8cf5ff; font-size: 0.75rem; opacity: 0.9; margin-top: 2px; min-height: 1em; }
+        .preview-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+        }
+        .preview-icon {
+            font-size: 0.8rem;
+            filter: drop-shadow(0 0 8px rgba(0,234,255,0.45));
+        }
         .card-actions { padding: 16px 22px 22px; border-top: 1px solid var(--border); }
         .btn-download {
             width: 100%; padding: 13px;
-            background: var(--accent); color: white; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent2), var(--accent)); color: white; border: none; border-radius: 12px;
             font-family: 'Syne', sans-serif; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.04em;
             cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
             transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 4px 20px rgba(124,111,239,0.4);
+            box-shadow: 0 8px 26px rgba(255,43,214,0.35);
         }
-        .btn-download:hover { background: #9288f5; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(124,111,239,0.5); }
+        .btn-download:hover { transform: translateY(-1px); box-shadow: 0 10px 32px rgba(0,234,255,0.35); }
         .btn-download:active { transform: translateY(0); }
         .btn-download svg { width: 15px; height: 15px; }
         .privacy-note {
@@ -213,7 +236,7 @@
             <div class="logo-icon">
                 <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             </div>
-            <h1>Quick Connect</h1>
+            <h1>Quick Contact</h1>
         </div>
         <p class="subtitle">Saniyeler içinde dijital kartvizitini oluştur ve paylaş.</p>
     </header>
@@ -223,7 +246,7 @@
 
             <!-- Kişisel Bilgiler -->
             <div class="section-block">
-                <p class="section-title">Kişisel Bilgiler</p>
+                <p class="section-title"><span class="section-icon">👤</span>Kişisel Bilgiler</p>
                 <div class="field-grid-2">
                     <input id="fName"   oninput="updateQR()" type="text" placeholder="Ad"    autocomplete="given-name">
                     <input id="lName"   oninput="updateQR()" type="text" placeholder="Soyad" autocomplete="family-name">
@@ -238,9 +261,12 @@
 
             <!-- İletişim Bilgileri -->
             <div class="section-block">
-                <p class="section-title">İletişim Bilgileri</p>
-                <div class="field-row">
-                    <input id="phone"   oninput="updateQR()" type="tel"   placeholder="Telefon"  autocomplete="tel">
+                <p class="section-title"><span class="section-icon">📡</span>İletişim Bilgileri</p>
+                <div class="field-row phone-row">
+                    <select id="countryCode" onchange="updateQR()" aria-label="Ülke alan kodu"></select>
+                    <input id="phone" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="20" enterkeyhint="done"
+                           placeholder="Telefon (alan kodu hariç)" autocomplete="tel-national"
+                           oninput="digitsOnlyPhone(this); updateQR()">
                 </div>
                 <div class="field-row">
                     <input id="email"   oninput="updateQR()" type="email" placeholder="E-posta"  autocomplete="email">
@@ -252,7 +278,7 @@
 
             <!-- Sosyal Medya -->
             <div class="section-block">
-                <p class="section-title">Sosyal Medya</p>
+                <p class="section-title"><span class="section-icon">🚀</span>Sosyal Medya</p>
                 <div class="social-rows" id="socialRows"></div>
                 <button class="btn-add-social" onclick="addSocialRow()">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -276,8 +302,8 @@
                     </div>
                     <div class="card-info">
                         <p id="previewName">Ad Soyad</p>
-                        <p id="previewTitle">Unvan</p>
-                        <p id="previewCompany"></p>
+                        <p id="previewTitle" class="preview-meta"><span class="preview-icon">💼</span><span id="previewTitleText">Unvan</span></p>
+                        <p id="previewCompany" class="preview-meta"><span class="preview-icon">🏢</span><span id="previewCompanyText"></span></p>
                     </div>
                 </div>
                 <div class="card-actions">
@@ -302,28 +328,51 @@
 </div>
 
 <script>
+/** Sosyal linkler: tam URL üretilir; vCard’ta çoğunlukla `URL` satırı (iOS/Android uyumu) */
 const PLATFORMS = [
-    { value: 'instagram', label: 'Instagram',   placeholder: 'kullanıcı adı',        prefix: 'https://instagram.com/',    vcf: 'X-SOCIALPROFILE;TYPE=instagram' },
-    { value: 'linkedin',  label: 'LinkedIn',    placeholder: 'profil URL veya adı',  prefix: 'https://linkedin.com/in/',  vcf: 'URL;TYPE=linkedin' },
-    { value: 'github',    label: 'GitHub',      placeholder: 'kullanıcı adı',        prefix: 'https://github.com/',       vcf: 'URL;TYPE=github' },
-    { value: 'twitter',   label: 'X / Twitter', placeholder: 'kullanıcı adı',        prefix: 'https://x.com/',            vcf: 'X-SOCIALPROFILE;TYPE=twitter' },
-    { value: 'tiktok',    label: 'TikTok',      placeholder: 'kullanıcı adı',        prefix: 'https://tiktok.com/@',      vcf: 'X-SOCIALPROFILE;TYPE=tiktok' },
-    { value: 'youtube',   label: 'YouTube',     placeholder: 'kanal adı veya URL',   prefix: 'https://youtube.com/@',     vcf: 'URL;TYPE=youtube' },
-    { value: 'facebook',  label: 'Facebook',    placeholder: 'kullanıcı adı',        prefix: 'https://facebook.com/',     vcf: 'URL;TYPE=facebook' },
-    { value: 'behance',   label: 'Behance',     placeholder: 'kullanıcı adı',        prefix: 'https://behance.net/',      vcf: 'URL;TYPE=behance' },
-    { value: 'dribbble',  label: 'Dribbble',    placeholder: 'kullanıcı adı',        prefix: 'https://dribbble.com/',     vcf: 'URL;TYPE=dribbble' },
-    { value: 'telegram',  label: 'Telegram',    placeholder: 'kullanıcı adı',        prefix: 'https://t.me/',             vcf: 'X-SOCIALPROFILE;TYPE=telegram' },
-    { value: 'whatsapp',  label: 'WhatsApp',    placeholder: 'telefon numarası',     prefix: 'https://wa.me/',            vcf: 'X-SOCIALPROFILE;TYPE=whatsapp' },
-    { value: 'snapchat',  label: 'Snapchat',    placeholder: 'kullanıcı adı',        prefix: 'https://snapchat.com/add/', vcf: 'X-SOCIALPROFILE;TYPE=snapchat' },
-    { value: 'custom',    label: 'Diğer URL',   placeholder: 'tam URL (https://...)', prefix: '',                          vcf: 'URL' },
+    { value: 'instagram', label: 'Instagram',   placeholder: 'kullanıcı adı',        prefix: 'https://instagram.com/',    },
+    { value: 'linkedin',  label: 'LinkedIn',    placeholder: 'profil URL veya adı',  prefix: 'https://linkedin.com/in/',  },
+    { value: 'github',    label: 'GitHub',      placeholder: 'kullanıcı adı',        prefix: 'https://github.com/',       },
+    { value: 'twitter',   label: 'X / Twitter', placeholder: 'kullanıcı adı',        prefix: 'https://x.com/',            },
+    { value: 'tiktok',    label: 'TikTok',      placeholder: 'kullanıcı adı',        prefix: 'https://tiktok.com/@',      },
+    { value: 'youtube',   label: 'YouTube',     placeholder: 'kanal adı veya URL',   prefix: 'https://youtube.com/@',     },
+    { value: 'facebook',  label: 'Facebook',    placeholder: 'kullanıcı adı',        prefix: 'https://facebook.com/',     },
+    { value: 'behance',   label: 'Behance',     placeholder: 'kullanıcı adı',        prefix: 'https://behance.net/',      },
+    { value: 'dribbble',  label: 'Dribbble',    placeholder: 'kullanıcı adı',        prefix: 'https://dribbble.com/',     },
+    { value: 'telegram',  label: 'Telegram',    placeholder: 'kullanıcı adı',        prefix: 'https://t.me/',             },
+    { value: 'whatsapp',  label: 'WhatsApp',    placeholder: 'telefon numarası',     prefix: 'https://wa.me/',            },
+    { value: 'snapchat',  label: 'Snapchat',    placeholder: 'kullanıcı adı',        prefix: 'https://snapchat.com/add/', },
+    { value: 'custom',    label: 'Diğer URL',   placeholder: 'tam URL (https://...)', prefix: '',                          },
+];
+const COUNTRY_CODES = [
+    { code: '+90',  label: 'TR (+90)' },
+    { code: '+1',   label: 'US/CA (+1)' },
+    { code: '+44',  label: 'UK (+44)' },
+    { code: '+49',  label: 'DE (+49)' },
+    { code: '+33',  label: 'FR (+33)' },
+    { code: '+39',  label: 'IT (+39)' },
+    { code: '+34',  label: 'ES (+34)' },
+    { code: '+31',  label: 'NL (+31)' },
+    { code: '+32',  label: 'BE (+32)' },
+    { code: '+41',  label: 'CH (+41)' },
+    { code: '+43',  label: 'AT (+43)' },
+    { code: '+46',  label: 'SE (+46)' },
+    { code: '+47',  label: 'NO (+47)' },
+    { code: '+45',  label: 'DK (+45)' },
+    { code: '+358', label: 'FI (+358)' },
+    { code: '+971', label: 'AE (+971)' },
+    { code: '+966', label: 'SA (+966)' },
+    { code: '+20',  label: 'EG (+20)' },
+    { code: '+7',   label: 'RU (+7)' },
+    { code: '+380', label: 'UA (+380)' },
 ];
 
 let rowCount = 0;
 let vcardData = '';
 
 const qr = new QRCode(document.getElementById('qrcode'), {
-    text: 'QuickConnect', width: 192, height: 192,
-    colorDark: '#1a0f4d', colorLight: '#ffffff',
+    text: 'Quick Contact', width: 192, height: 192,
+    colorDark: '#140d4f', colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.H
 });
 
@@ -332,6 +381,14 @@ function pulseQR() {
     f.classList.remove('updated');
     void f.offsetWidth;
     f.classList.add('updated');
+}
+
+function initCountryCodeSelect() {
+    const sel = document.getElementById('countryCode');
+    if (!sel) return;
+    sel.innerHTML = COUNTRY_CODES
+        .map(({ code, label }) => `<option value="${code}"${code === '+90' ? ' selected' : ''}>${label}</option>`)
+        .join('');
 }
 
 function addSocialRow(platform = 'instagram', value = '') {
@@ -350,10 +407,46 @@ function addSocialRow(platform = 'instagram', value = '') {
         </select>
         <input  class="social-handle" id="si-${id}" type="text"
                 placeholder="${p.placeholder}" value="${value}"
-                oninput="updateQR()">
+                oninput="onSocialHandleInput(${id}, this)">
         <button class="btn-remove" onclick="removeRow(${id})" title="Kaldır">&#x2715;</button>
     `;
     document.getElementById('socialRows').appendChild(row);
+    applySocialInputModeForRow(id);
+    updateQR();
+}
+
+/** Telefon alanı: yalnızca 0–9 (mobilde sayı klavyesi + yapıştırma dahil filtre) */
+function digitsOnlyPhone(el) {
+    const cleaned = el.value.replace(/\D/g, '');
+    if (el.value !== cleaned) el.value = cleaned;
+}
+
+function applySocialInputModeForRow(id) {
+    const row = document.querySelector(`.social-row[data-id="${id}"]`);
+    if (!row) return;
+    const sel = row.querySelector('select');
+    const inp = document.getElementById(`si-${id}`);
+    if (!sel || !inp) return;
+    if (sel.value === 'whatsapp') {
+        inp.setAttribute('inputmode', 'numeric');
+        inp.setAttribute('pattern', '[0-9]*');
+        inp.setAttribute('maxlength', '20');
+        inp.setAttribute('enterkeyhint', 'done');
+    } else {
+        inp.removeAttribute('inputmode');
+        inp.removeAttribute('pattern');
+        inp.removeAttribute('maxlength');
+        inp.removeAttribute('enterkeyhint');
+    }
+}
+
+function onSocialHandleInput(id, el) {
+    const row = document.querySelector(`.social-row[data-id="${id}"]`);
+    const sel = row && row.querySelector('select');
+    if (sel && sel.value === 'whatsapp') {
+        const cleaned = el.value.replace(/\D/g, '');
+        if (el.value !== cleaned) el.value = cleaned;
+    }
     updateQR();
 }
 
@@ -371,6 +464,7 @@ function onPlatformChange(id, sel) {
     const inp = document.getElementById(`si-${id}`);
     inp.placeholder = p.placeholder;
     inp.value = '';
+    applySocialInputModeForRow(id);
     updateQR();
 }
 
@@ -385,38 +479,121 @@ function getSocials() {
         .filter(r => r.value);
 }
 
+/** vCard 3.0 / RFC 2425: satır sonları CRLF (iOS & Android rehber uyumu) */
+const VCRLF = '\r\n';
+
+/** vCard 3.0 özellik değeri kaçışı */
+function escapeVcardValue(str) {
+    if (str == null || str === '') return '';
+    return String(str)
+        .replace(/\\/g, '\\\\')
+        .replace(/;/g, '\\;')
+        .replace(/,/g, '\\,')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '');
+}
+
+/** 75 oktetten uzun satırları katla (devam satırları boşlukla başlar) */
+function foldVcardLine(line) {
+    const maxBytes = 75;
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+    const bytes = enc.encode(line);
+    if (bytes.length <= maxBytes) return line;
+    const out = [];
+    let pos = 0;
+    let first = true;
+    while (pos < bytes.length) {
+        const budget = first ? maxBytes : 74;
+        let end = Math.min(pos + budget, bytes.length);
+        while (end > pos && (bytes[end - 1] & 0xc0) === 0x80) end--;
+        if (end === pos) end = Math.min(pos + (first ? maxBytes : 74), bytes.length);
+        const chunk = bytes.subarray(pos, end);
+        const text = first ? dec.decode(chunk) : ' ' + dec.decode(chunk);
+        out.push(text);
+        pos = end;
+        first = false;
+    }
+    return out.join(VCRLF);
+}
+
+function normalizeWebUrl(raw) {
+    const t = (raw || '').trim();
+    if (!t) return '';
+    if (/^https?:\/\//i.test(t)) return t;
+    return 'https://' + t.replace(/^\/+/, '');
+}
+
+function buildSocialUrl(platform, value) {
+    const p = PLATFORMS.find(x => x.value === platform);
+    if (!p || !value) return '';
+    const v = value.trim();
+    if (!v) return '';
+    if (platform === 'custom' || /^https?:\/\//i.test(v)) return normalizeWebUrl(v);
+    return p.prefix + v.replace(/^\/+/, '');
+}
+
+/**
+ * Apple Contacts & Google Contacts: VERSION 3.0, CRLF, CHARSET, TEL/EMAIL/URL tipleri,
+ * uzun URL’lerde satır katlama; sosyal linkler tekrarlanan URL satırı olarak (en geniş uyum).
+ */
+function buildVcard() {
+    const fName   = document.getElementById('fName').value.trim();
+    const lName   = document.getElementById('lName').value.trim();
+    const title   = document.getElementById('jobTitle').value.trim();
+    const company = document.getElementById('company').value.trim();
+    const countryCode = (document.getElementById('countryCode').value || '+90').trim();
+    const phone   = document.getElementById('phone').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const website = document.getElementById('website').value.trim();
+    const socials = getSocials();
+
+    const fullName = [fName, lName].filter(Boolean).join(' ').trim();
+    const fn = fullName || 'Contact';
+
+    const lines = [];
+    const add = (prop) => lines.push(foldVcardLine(prop));
+
+    add('BEGIN:VCARD');
+    add('VERSION:3.0');
+    add(`N;CHARSET=UTF-8:${escapeVcardValue(lName)};${escapeVcardValue(fName)};;;`);
+    add(`FN;CHARSET=UTF-8:${escapeVcardValue(fn)}`);
+    if (company) add(`ORG;CHARSET=UTF-8:${escapeVcardValue(company)}`);
+    if (title) add(`TITLE;CHARSET=UTF-8:${escapeVcardValue(title)}`);
+
+    if (phone) {
+        const ccDigits = countryCode.replace(/\D/g, '');
+        const telDigits = phone.replace(/\D/g, '');
+        const fullPhone = (ccDigits ? `+${ccDigits}` : '') + telDigits;
+        if (telDigits) add(`TEL;TYPE=CELL;VOICE:${escapeVcardValue(fullPhone)}`);
+    }
+    if (email) add(`EMAIL;CHARSET=UTF-8;TYPE=INTERNET:${escapeVcardValue(email)}`);
+    if (website) {
+        const w = normalizeWebUrl(website);
+        if (w) add(`URL;CHARSET=UTF-8;TYPE=WORK:${escapeVcardValue(w)}`);
+    }
+
+    socials.forEach(({ platform, value }) => {
+        const url = buildSocialUrl(platform, value);
+        if (url) add(`URL;CHARSET=UTF-8:${escapeVcardValue(url)}`);
+    });
+
+    add('END:VCARD');
+    return lines.join(VCRLF);
+}
+
 function updateQR() {
     const fName   = document.getElementById('fName').value.trim();
     const lName   = document.getElementById('lName').value.trim();
     const title   = document.getElementById('jobTitle').value.trim();
     const company = document.getElementById('company').value.trim();
-    const phone   = document.getElementById('phone').value.trim();
-    const email   = document.getElementById('email').value.trim();
-    const website = document.getElementById('website').value.trim();
-    const socials = getSocials();
     const fullName = [fName, lName].filter(Boolean).join(' ');
 
-    document.getElementById('previewName').textContent    = fullName  || 'Ad Soyad';
-    document.getElementById('previewTitle').textContent   = title     || 'Unvan';
-    document.getElementById('previewCompany').textContent = company   || '';
+    document.getElementById('previewName').textContent        = fullName  || 'Ad Soyad';
+    document.getElementById('previewTitleText').textContent   = title     || 'Unvan';
+    document.getElementById('previewCompanyText').textContent = company   || '';
 
-    vcardData  = 'BEGIN:VCARD\nVERSION:3.0\n';
-    vcardData += `N;CHARSET=UTF-8:${lName};${fName};;;\n`;
-    vcardData += `FN;CHARSET=UTF-8:${fullName || 'Unknown'}\n`;
-    if (title)   vcardData += `TITLE;CHARSET=UTF-8:${title}\n`;
-    if (company) vcardData += `ORG;CHARSET=UTF-8:${company}\n`;
-    if (phone)   vcardData += `TEL;TYPE=CELL:${phone}\n`;
-    if (email)   vcardData += `EMAIL:${email}\n`;
-    if (website) vcardData += `URL:${website}\n`;
-
-    socials.forEach(({ platform, value }) => {
-        const p = PLATFORMS.find(x => x.value === platform);
-        if (!p) return;
-        const url = (value.startsWith('http') || platform === 'custom') ? value : p.prefix + value;
-        vcardData += `${p.vcf}:${url}\n`;
-    });
-
-    vcardData += 'END:VCARD';
+    vcardData = buildVcard();
     qr.clear();
     qr.makeCode(vcardData);
     pulseQR();
@@ -429,12 +606,13 @@ function downloadVCF() {
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href = url;
-    a.download = `QuickConnect_${fName}.vcf`;
+    a.download = `QuickContact_${fName}.vcf`;
     a.click();
     URL.revokeObjectURL(url);
 }
 
 // Init
+initCountryCodeSelect();
 addSocialRow('instagram');
 </script>
 </body>
