@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Connect | Dijital Kartvizit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface2: #1a1a26;
+            --border: rgba(255,255,255,0.07);
+            --accent: #7c6fef;
+            --accent2: #b8aefc;
+            --accent-dim: rgba(124,111,239,0.12);
+            --text: #f0eff8;
+            --muted: #6b6a7e;
+            --danger: #ef6f6f;
+            --card-bg: linear-gradient(145deg, #1a1930 0%, #0f0e1a 100%);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03; pointer-events: none; z-index: 9999;
+        }
+        .blob { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+        .blob-1 { width: 500px; height: 500px; background: rgba(124,111,239,0.12); top: -150px; right: -150px; }
+        .blob-2 { width: 400px; height: 400px; background: rgba(79,60,201,0.08); bottom: -100px; left: -100px; }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 60px 24px; position: relative; z-index: 1; }
+
+        header { text-align: center; margin-bottom: 56px; animation: fadeUp 0.7s ease both; }
+        .logo { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .logo-icon {
+            width: 36px; height: 36px; background: var(--accent); border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 24px rgba(124,111,239,0.5);
+        }
+        .logo-icon svg { width: 18px; height: 18px; fill: white; }
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 800; letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 30%, var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .subtitle { color: var(--muted); font-weight: 300; font-size: 0.9rem; letter-spacing: 0.02em; margin-top: 6px; }
+
+        .layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; align-items: start; }
+        @media (max-width: 800px) {
+            .layout { grid-template-columns: 1fr; }
+            .sticky-panel { position: static !important; }
+        }
+
+        .form-panel {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; overflow: hidden;
+            animation: fadeUp 0.7s 0.1s ease both;
+        }
+
+        .section-block { padding: 24px 28px; }
+        .section-block + .section-block { border-top: 1px solid var(--border); }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.16em; text-transform: uppercase;
+            color: var(--accent2); opacity: 0.7;
+            margin-bottom: 16px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-title::before { content: ''; width: 12px; height: 2px; background: var(--accent); border-radius: 2px; flex-shrink: 0; }
+
+        .field-row { margin-bottom: 10px; }
+        .field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        input::placeholder { color: var(--muted); }
+        input:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(124,111,239,0.15);
+            background: #1e1d2e;
+        }
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%236b6a7e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
+        }
+        select option { background: #1a1a26; color: var(--text); }
+
+        /* Social rows */
+        .social-rows { display: flex; flex-direction: column; gap: 8px; }
+        .social-row {
+            display: flex; gap: 8px; align-items: center;
+            animation: rowIn 0.25s ease both;
+        }
+        @keyframes rowIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+        .social-row .platform-select { flex: 0 0 140px; }
+        .social-row .social-handle   { flex: 1; min-width: 0; }
+
+        .btn-remove {
+            flex: 0 0 34px; height: 34px; border-radius: 9px;
+            background: transparent; border: 1px solid var(--border);
+            color: var(--muted); cursor: pointer; font-size: 0.8rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .btn-remove:hover { background: rgba(239,111,111,0.1); color: var(--danger); border-color: rgba(239,111,111,0.25); }
+
+        .btn-add-social {
+            margin-top: 10px; width: 100%; padding: 10px;
+            background: transparent; border: 1px dashed rgba(124,111,239,0.3);
+            border-radius: 11px; color: var(--accent2);
+            font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .btn-add-social:hover { background: var(--accent-dim); border-color: rgba(124,111,239,0.5); }
+
+        /* Preview */
+        .sticky-panel { position: sticky; top: 24px; }
+        .preview-card {
+            border-radius: 20px; overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid rgba(124,111,239,0.2);
+            box-shadow: 0 0 60px rgba(124,111,239,0.1), 0 40px 80px rgba(0,0,0,0.4);
+            animation: fadeUp 0.7s 0.2s ease both;
+        }
+        .card-top {
+            padding: 28px 28px 0;
+            background: linear-gradient(180deg, rgba(124,111,239,0.1) 0%, transparent 100%);
+        }
+        .card-header-label {
+            font-size: 0.63rem; letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--accent2); opacity: 0.5; margin-bottom: 20px;
+        }
+        .qr-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
+        .qr-frame {
+            background: white; padding: 10px; border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1);
+        }
+        #qrcode img { display: block; border-radius: 4px; }
+        .card-info { text-align: center; padding-bottom: 20px; }
+        #previewName {
+            font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 40%, var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            transition: all 0.3s;
+        }
+        #previewTitle { color: var(--muted); font-size: 0.78rem; font-style: italic; margin-top: 3px; }
+        #previewCompany { color: var(--accent2); font-size: 0.75rem; opacity: 0.65; margin-top: 2px; min-height: 1em; }
+        .card-actions { padding: 16px 22px 22px; border-top: 1px solid var(--border); }
+        .btn-download {
+            width: 100%; padding: 13px;
+            background: var(--accent); color: white; border: none; border-radius: 12px;
+            font-family: 'Syne', sans-serif; font-size: 0.875rem; font-weight: 700; letter-spacing: 0.04em;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(124,111,239,0.4);
+        }
+        .btn-download:hover { background: #9288f5; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(124,111,239,0.5); }
+        .btn-download:active { transform: translateY(0); }
+        .btn-download svg { width: 15px; height: 15px; }
+        .privacy-note {
+            margin-top: 14px; text-align: center; color: var(--muted); font-size: 0.72rem;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .qr-frame.updated { animation: pulseBorder 0.4s ease; }
+        @keyframes pulseBorder {
+            0%   { box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 0px rgba(124,111,239,0.6); }
+            50%  { box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 6px rgba(124,111,239,0); }
+            100% { box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 0px rgba(124,111,239,0); }
+        }
+    </style>
+</head>
+<body>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<div class="container">
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <h1>Quick Connect</h1>
+        </div>
+        <p class="subtitle">Saniyeler içinde dijital kartvizitini oluştur ve paylaş.</p>
+    </header>
+
+    <div class="layout">
+        <div class="form-panel">
+
+            <!-- Kişisel Bilgiler -->
+            <div class="section-block">
+                <p class="section-title">Kişisel Bilgiler</p>
+                <div class="field-grid-2">
+                    <input id="fName"   oninput="updateQR()" type="text" placeholder="Ad"    autocomplete="given-name">
+                    <input id="lName"   oninput="updateQR()" type="text" placeholder="Soyad" autocomplete="family-name">
+                </div>
+                <div class="field-row">
+                    <input id="jobTitle" oninput="updateQR()" type="text" placeholder="Unvan  (Örn: Yazılım Geliştirici)">
+                </div>
+                <div class="field-row">
+                    <input id="company" oninput="updateQR()" type="text" placeholder="Şirket Adı">
+                </div>
+            </div>
+
+            <!-- İletişim Bilgileri -->
+            <div class="section-block">
+                <p class="section-title">İletişim Bilgileri</p>
+                <div class="field-row">
+                    <input id="phone"   oninput="updateQR()" type="tel"   placeholder="Telefon"  autocomplete="tel">
+                </div>
+                <div class="field-row">
+                    <input id="email"   oninput="updateQR()" type="email" placeholder="E-posta"  autocomplete="email">
+                </div>
+                <div class="field-row">
+                    <input id="website" oninput="updateQR()" type="url"   placeholder="Web Sitesi  (Örn: https://örnek.com)">
+                </div>
+            </div>
+
+            <!-- Sosyal Medya -->
+            <div class="section-block">
+                <p class="section-title">Sosyal Medya</p>
+                <div class="social-rows" id="socialRows"></div>
+                <button class="btn-add-social" onclick="addSocialRow()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Hesap Ekle
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Preview -->
+        <div class="sticky-panel">
+            <div class="preview-card">
+                <div class="card-top">
+                    <p class="card-header-label">Kartvizit Önizleme</p>
+                    <div class="qr-wrapper">
+                        <div class="qr-frame" id="qrFrame">
+                            <div id="qrcode"></div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <p id="previewName">Ad Soyad</p>
+                        <p id="previewTitle">Unvan</p>
+                        <p id="previewCompany"></p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-download" onclick="downloadVCF()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        VCF Dosyasını İndir
+                    </button>
+                </div>
+            </div>
+            <p class="privacy-note">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Verileriniz cihazınızda işlenir, sunucuya kaydedilmez.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+const PLATFORMS = [
+    { value: 'instagram', label: 'Instagram',   placeholder: 'kullanıcı adı',        prefix: 'https://instagram.com/',    vcf: 'X-SOCIALPROFILE;TYPE=instagram' },
+    { value: 'linkedin',  label: 'LinkedIn',    placeholder: 'profil URL veya adı',  prefix: 'https://linkedin.com/in/',  vcf: 'URL;TYPE=linkedin' },
+    { value: 'github',    label: 'GitHub',      placeholder: 'kullanıcı adı',        prefix: 'https://github.com/',       vcf: 'URL;TYPE=github' },
+    { value: 'twitter',   label: 'X / Twitter', placeholder: 'kullanıcı adı',        prefix: 'https://x.com/',            vcf: 'X-SOCIALPROFILE;TYPE=twitter' },
+    { value: 'tiktok',    label: 'TikTok',      placeholder: 'kullanıcı adı',        prefix: 'https://tiktok.com/@',      vcf: 'X-SOCIALPROFILE;TYPE=tiktok' },
+    { value: 'youtube',   label: 'YouTube',     placeholder: 'kanal adı veya URL',   prefix: 'https://youtube.com/@',     vcf: 'URL;TYPE=youtube' },
+    { value: 'facebook',  label: 'Facebook',    placeholder: 'kullanıcı adı',        prefix: 'https://facebook.com/',     vcf: 'URL;TYPE=facebook' },
+    { value: 'behance',   label: 'Behance',     placeholder: 'kullanıcı adı',        prefix: 'https://behance.net/',      vcf: 'URL;TYPE=behance' },
+    { value: 'dribbble',  label: 'Dribbble',    placeholder: 'kullanıcı adı',        prefix: 'https://dribbble.com/',     vcf: 'URL;TYPE=dribbble' },
+    { value: 'telegram',  label: 'Telegram',    placeholder: 'kullanıcı adı',        prefix: 'https://t.me/',             vcf: 'X-SOCIALPROFILE;TYPE=telegram' },
+    { value: 'whatsapp',  label: 'WhatsApp',    placeholder: 'telefon numarası',     prefix: 'https://wa.me/',            vcf: 'X-SOCIALPROFILE;TYPE=whatsapp' },
+    { value: 'snapchat',  label: 'Snapchat',    placeholder: 'kullanıcı adı',        prefix: 'https://snapchat.com/add/', vcf: 'X-SOCIALPROFILE;TYPE=snapchat' },
+    { value: 'custom',    label: 'Diğer URL',   placeholder: 'tam URL (https://...)', prefix: '',                          vcf: 'URL' },
+];
+
+let rowCount = 0;
+let vcardData = '';
+
+const qr = new QRCode(document.getElementById('qrcode'), {
+    text: 'QuickConnect', width: 192, height: 192,
+    colorDark: '#1a0f4d', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+});
+
+function pulseQR() {
+    const f = document.getElementById('qrFrame');
+    f.classList.remove('updated');
+    void f.offsetWidth;
+    f.classList.add('updated');
+}
+
+function addSocialRow(platform = 'instagram', value = '') {
+    const id = ++rowCount;
+    const p  = PLATFORMS.find(x => x.value === platform) || PLATFORMS[0];
+    const options = PLATFORMS.map(pl =>
+        `<option value="${pl.value}"${pl.value === platform ? ' selected' : ''}>${pl.label}</option>`
+    ).join('');
+
+    const row = document.createElement('div');
+    row.className = 'social-row';
+    row.dataset.id = id;
+    row.innerHTML = `
+        <select class="platform-select" data-rowid="${id}" onchange="onPlatformChange(${id},this)">
+            ${options}
+        </select>
+        <input  class="social-handle" id="si-${id}" type="text"
+                placeholder="${p.placeholder}" value="${value}"
+                oninput="updateQR()">
+        <button class="btn-remove" onclick="removeRow(${id})" title="Kaldır">&#x2715;</button>
+    `;
+    document.getElementById('socialRows').appendChild(row);
+    updateQR();
+}
+
+function removeRow(id) {
+    const row = document.querySelector(`.social-row[data-id="${id}"]`);
+    if (!row) return;
+    row.style.transition = 'opacity 0.2s, transform 0.2s';
+    row.style.opacity    = '0';
+    row.style.transform  = 'translateY(-6px)';
+    setTimeout(() => { row.remove(); updateQR(); }, 200);
+}
+
+function onPlatformChange(id, sel) {
+    const p = PLATFORMS.find(x => x.value === sel.value) || PLATFORMS[0];
+    const inp = document.getElementById(`si-${id}`);
+    inp.placeholder = p.placeholder;
+    inp.value = '';
+    updateQR();
+}
+
+function getSocials() {
+    return Array.from(document.querySelectorAll('.social-row'))
+        .map(row => {
+            const id  = row.dataset.id;
+            const sel = row.querySelector('select');
+            const inp = document.getElementById(`si-${id}`);
+            return { platform: sel.value, value: (inp.value || '').trim() };
+        })
+        .filter(r => r.value);
+}
+
+function updateQR() {
+    const fName   = document.getElementById('fName').value.trim();
+    const lName   = document.getElementById('lName').value.trim();
+    const title   = document.getElementById('jobTitle').value.trim();
+    const company = document.getElementById('company').value.trim();
+    const phone   = document.getElementById('phone').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const website = document.getElementById('website').value.trim();
+    const socials = getSocials();
+    const fullName = [fName, lName].filter(Boolean).join(' ');
+
+    document.getElementById('previewName').textContent    = fullName  || 'Ad Soyad';
+    document.getElementById('previewTitle').textContent   = title     || 'Unvan';
+    document.getElementById('previewCompany').textContent = company   || '';
+
+    vcardData  = 'BEGIN:VCARD\nVERSION:3.0\n';
+    vcardData += `N;CHARSET=UTF-8:${lName};${fName};;;\n`;
+    vcardData += `FN;CHARSET=UTF-8:${fullName || 'Unknown'}\n`;
+    if (title)   vcardData += `TITLE;CHARSET=UTF-8:${title}\n`;
+    if (company) vcardData += `ORG;CHARSET=UTF-8:${company}\n`;
+    if (phone)   vcardData += `TEL;TYPE=CELL:${phone}\n`;
+    if (email)   vcardData += `EMAIL:${email}\n`;
+    if (website) vcardData += `URL:${website}\n`;
+
+    socials.forEach(({ platform, value }) => {
+        const p = PLATFORMS.find(x => x.value === platform);
+        if (!p) return;
+        const url = (value.startsWith('http') || platform === 'custom') ? value : p.prefix + value;
+        vcardData += `${p.vcf}:${url}\n`;
+    });
+
+    vcardData += 'END:VCARD';
+    qr.clear();
+    qr.makeCode(vcardData);
+    pulseQR();
+}
+
+function downloadVCF() {
+    const fName = document.getElementById('fName').value.trim();
+    if (!fName) { alert('Lütfen önce en az adınızı girin.'); return; }
+    const blob = new Blob([vcardData], { type: 'text/vcard;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `QuickConnect_${fName}.vcf`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Init
+addSocialRow('instagram');
+</script>
+</body>
+</html>
